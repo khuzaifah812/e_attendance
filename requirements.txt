@@ -1,0 +1,10 @@
+asgiref==3.12.1
+cffi==2.1.1
+cryptography==50.0.2
+Django==5.1.4
+gunicorn==23.0.0
+packaging==26.3
+pycparser==3.11
+PyMySQL==1.1.1
+sqlparse==0.6.0
+whitenoise==6.8.2
