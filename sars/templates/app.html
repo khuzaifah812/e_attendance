@@ -1,0 +1,31 @@
+{% extends 'base.html' %}{% load static sars_tags %}
+{% block bodyclass %}app{% endblock %}
+{% block body %}
+<div class="layout">
+ <aside class="sidebar" id="sidebar">
+  <a class="brand" href="{% url 'dashboard' %}">{% include 'partials/logo.html' with light=True %}</a>
+  <nav>{% for m in menu %}<a href="{{ m.url }}" class="{% if m.active %}active{% endif %}">{{ m.svg }}<span>{{ m.label }}</span>{% if m.badge %}<b class="badge-dot">{{ m.badge }}</b>{% endif %}</a>{% endfor %}
+   <a href="{% url 'logout' %}" data-confirm="Do you want to log out of SARS?" data-title="Log out"><svg class="ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span>Logout</span></a>
+  </nav>
+  <div class="side-card" style="margin-top:20px"><strong>Your Education<br>Our Priority</strong></div>
+ </aside>
+ <div class="main">
+  <header class="topbar">
+   <button class="menu-btn" id="menuBtn" type="button">&#9776;</button>
+   <div class="top-title">{% block pagetitle %}{% endblock %}</div>
+   <div class="top-right">
+    <a class="icon-btn" href="{% url 'notifications' %}" title="Notifications">{% icon 'bell' 22 %}{% if unread_count %}<b>{{ unread_count }}</b>{% endif %}</a>
+    <a class="user-chip" href="{% url 'profile' %}" style="text-decoration:none;color:inherit">{% include 'partials/avatar.html' with u=user cls='sm' %}<div><strong>{{ user.display_name }}</strong><small>{{ user.get_role_display }}</small></div></a>
+   </div>
+  </header>
+  <main class="content">
+   {% include 'partials/messages.html' %}
+   {% block content %}{% endblock %}
+  </main>
+ </div>
+</div>
+<div class="modal" id="modal" hidden><div class="modal-box">
+ <div class="modal-icon" id="modalIcon">!</div><h3 id="modalTitle">Please confirm</h3><p id="modalText"></p>
+ <div class="modal-actions"><button class="btn btn-light" id="modalCancel" type="button">Cancel</button><button class="btn btn-primary" id="modalOk" type="button">Confirm</button></div>
+</div></div>
+{% endblock %}

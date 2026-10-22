@@ -1,0 +1,19 @@
+{% extends 'app.html' %}{% load static sars_tags %}
+{% block title %}My Profile{% endblock %}{% block pagetitle %}My Profile{% endblock %}
+{% block head %}<script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.13/dist/face-api.js"></script>{% endblock %}
+{% block content %}
+<div class="grid g2">
+ <div class="card"><div class="profile-head">{% include 'partials/avatar.html' with u=user cls='lg' %}<div><h1 style="font-size:22px">{{ user.display_name }}</h1><span class="badge live">{{ user.get_role_display }}</span></div></div>
+  <dl class="kv mt"><dt>Username</dt><dd>{{ user.username }}</dd><dt>Email</dt><dd>{{ user.email|default:"-" }}</dd><dt>Phone</dt><dd>{{ user.phone|default:"-" }}</dd>
+   {% if role == 'student' %}<dt>Level</dt><dd>{{ user.get_level_display|default:"-" }}</dd><dt>Program</dt><dd>{{ user.program|default:"-" }}</dd><dt>Faculty</dt><dd>{{ user.faculty|default:"-" }}</dd><dt>Year of admission</dt><dd>{{ user.year_of_admission|default:"-" }}</dd>{% else %}<dt>Department</dt><dd>{{ user.department|default:"-" }}</dd>{% endif %}
+   <dt>Gender</dt><dd>{{ user.get_gender_display|default:"-" }}</dd><dt>Date of birth</dt><dd>{{ user.date_of_birth|date:"d M Y"|default:"-" }}</dd><dt>Nationality</dt><dd>{{ user.nationality|default:"-" }}</dd><dt>District</dt><dd>{{ user.district|default:"-" }}</dd><dt>Address</dt><dd>{{ user.address|default:"-" }}</dd></dl></div>
+ <div>
+  {% if role == 'student' %}<div class="card mb"><div class="card-head"><h3>Face recognition</h3><span class="badge {% if has_face %}good{% else %}warn{% endif %}">{% if has_face %}Enrolled{% else %}Not enrolled{% endif %}</span></div>
+   <p class="small muted mb">Enrol your face once. It is compared with your live camera scan when you take attendance for a physical lecture.</p>
+   <div class="camera" id="enrollCam"><span>Camera is off</span></div><p class="small center mt" id="enrollMsg"></p>
+   <div class="row mt" style="justify-content:center"><button class="btn btn-light" id="enrollStart" type="button">Start camera</button><button class="btn btn-primary" id="enrollGo" type="button">{% if has_face %}Re-enrol my face{% else %}Enrol my face{% endif %}</button></div></div>{% endif %}
+  <div class="card"><h3>Change password</h3><p class="small muted mb">Your first password is your full name. Choose a stronger one.</p>
+   <form method="post">{% csrf_token %}{% for f in form %}<div class="field"><label>{{ f.label }}</label>{{ f }}{{ f.errors }}</div>{% endfor %}<button class="btn btn-primary" type="submit">Update password</button></form></div>
+ </div></div>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/face.js' %}"></script><script>SARS_FACE.initEnroll("{% url 'api_face_enroll' %}");</script>{% endblock %}

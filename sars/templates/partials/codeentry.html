@@ -1,0 +1,6 @@
+{% load sars_tags %}
+<div class="field"><label>Lecture code</label><input type="text" id="codeInput" maxlength="8" placeholder="e.g. K7M2QX" style="text-transform:uppercase;letter-spacing:4px;font-size:20px;text-align:center"></div>
+<button class="btn btn-primary btn-block" id="codeGo" type="button">Verify &amp; mark attendance</button>
+<p class="center small muted" style="margin:12px 0">OR</p>
+<div class="camera" id="qrCam" style="aspect-ratio:16/10"><span>{% icon 'qr' 36 %}<br>Scan the lecturer's QR code</span></div>
+<div class="center mt"><button class="btn btn-light" id="qrStart" type="button">Scan QR code</button></div>

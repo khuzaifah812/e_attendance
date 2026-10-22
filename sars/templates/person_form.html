@@ -1,0 +1,35 @@
+{% extends 'base.html' %}{% load static sars_tags %}
+{% block title %}{% if kind == 'student' %}Student Registration{% else %}Add Lecturer{% endif %}{% endblock %}
+{% block head %}<script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.13/dist/face-api.js"></script>{% endblock %}
+{% block body %}
+<div class="auth-main" style="min-height:100vh;align-items:flex-start"><div class="auth-card wide">
+ <div class="row spread mb"><a href="{% url 'landing' %}">{% include 'partials/logo.html' %}</a>
+  {% if public %}<a class="btn btn-light btn-sm" href="{% url 'login' %}">Already registered? Login</a>{% else %}<a class="btn btn-light btn-sm" href="{% url 'dashboard' %}">&larr; Back to dashboard</a>{% endif %}</div>
+ <h2>{% if kind == 'student' %}Student Registration{% else %}Add Lecturer{% endif %}</h2>
+ <p class="muted small mb">Username = {% if kind == 'student' %}registration number{% else %}staff ID{% endif %} &middot; Password = the full name (First Last). You can change it later in My Profile.</p>
+ {% include 'partials/messages.html' %}
+ {% if form.non_field_errors %}<div class="alert alert-error">{{ form.non_field_errors }}</div>{% endif %}
+ <form method="post" id="personForm">{% csrf_token %}
+  <div class="grid" style="grid-template-columns:200px 1fr;gap:24px">
+   <div class="photo-box" id="photoBox">
+    <img id="photoPreview" alt="" style="display:none">
+    <div id="photoPlaceholder" class="avatar lg" style="margin-bottom:8px">{% icon 'camera' 34 %}</div>
+    <p class="small muted">Profile photo (used for face recognition)</p>
+    <input type="file" id="photoFile" accept="image/*" style="margin-top:8px;font-size:12px">
+    <button type="button" class="btn btn-light btn-sm mt" id="camBtn">Use camera</button>
+    <video id="camVideo" autoplay playsinline muted style="display:none;width:100%;border-radius:10px;margin-top:8px;transform:scaleX(-1)"></video>
+    <button type="button" class="btn btn-primary btn-sm mt hidden" id="snapBtn">Capture</button>
+    <p class="small" id="faceStatus" style="margin-top:8px"></p>
+    {{ form.photo_data }}{{ form.face_descriptor }}
+   </div>
+   <div class="grid-form">
+    {% for f in form.visible_fields %}
+     <div class="field"><label>{{ f.label }}{% if f.field.required %} *{% endif %}</label>{{ f }}{% if f.help_text %}<div class="help">{{ f.help_text }}</div>{% endif %}{{ f.errors }}</div>
+    {% endfor %}
+   </div>
+  </div>
+  <div class="row spread mt"><span class="small muted">Fields marked * are required.</span><button class="btn btn-primary" type="submit">{% if kind == 'student' %}Register{% else %}Add lecturer{% endif %}</button></div>
+ </form>
+</div></div>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/face.js' %}"></script><script>SARS_FACE.initPhotoForm();</script>{% endblock %}

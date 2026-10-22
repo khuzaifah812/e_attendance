@@ -1,0 +1,12 @@
+{% extends 'app.html' %}{% load sars_tags %}
+{% block title %}Posts{% endblock %}{% block pagetitle %}{% if role == 'student' %}Coursework &amp; Notes{% else %}Announcements &amp; Material{% endif %}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{% if role == 'student' %}Coursework, Notes &amp; Announcements{% else %}Announcements, Coursework, Notes &amp; Assignments{% endif %}</h1><p>Everything posted here is also sent to students by email.</p></div>
+ {% if role != 'student' %}<a class="btn btn-primary" href="{% url 'post_new' %}">+ New post</a>{% endif %}</div>
+<div class="tabs"><a class="{% if not kind %}on{% endif %}" href="?">All</a>{% for k, label in kinds %}<a class="{% if kind == k %}on{% endif %}" href="?kind={{ k }}">{{ label }}</a>{% endfor %}</div>
+{% for p in items %}<div class="card mb"><div class="card-head"><div><span class="badge {% if p.kind == 'assignment' %}warn{% endif %}">{{ p.get_kind_display }}</span> <b style="font-size:17px">{{ p.title }}</b></div><span class="small muted">{{ p.course.code }} &middot; {{ p.author.display_name }} &middot; {{ p.created_at|date:"d M Y, H:i" }}</span></div>
+ <p style="white-space:pre-line">{{ p.body }}</p>
+ {% if p.due_date %}<p class="small mt"><b>Due:</b> {{ p.due_date|date:"D d M Y, H:i" }}</p>{% endif %}
+ {% if p.attachment %}<p class="mt"><a class="btn btn-light btn-sm" href="{{ p.attachment.url }}" target="_blank">{% icon 'file' 16 %} Download attachment</a></p>{% endif %}</div>
+{% empty %}<div class="card"><p class="muted">Nothing posted yet.</p></div>{% endfor %}
+{% endblock %}

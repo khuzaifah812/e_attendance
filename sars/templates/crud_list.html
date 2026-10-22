@@ -1,0 +1,9 @@
+{% extends 'app.html' %}
+{% block title %}{{ plural }}{% endblock %}{% block pagetitle %}{{ plural }}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ plural }}</h1><p>{{ rows|length }} records</p></div><a class="btn btn-primary" href="{% url 'crud_new' key %}">+ Add {{ cfg.title|lower }}</a></div>
+<div class="card"><div class="table-wrap"><table><thead><tr>{% for l in labels %}<th>{{ l }}</th>{% endfor %}<th></th></tr></thead><tbody>
+{% for o, vals in rows %}<tr>{% for v in vals %}<td>{{ v }}</td>{% endfor %}<td><div class="actions"><a class="btn btn-light btn-sm" href="{% url 'crud_edit' key o.pk %}">Edit</a>
+<form method="post" action="{% url 'crud_delete' key o.pk %}">{% csrf_token %}<button class="btn btn-danger btn-sm" type="submit" data-confirm="Delete this {{ cfg.title|lower }}? Related records may also be removed." data-title="Confirm delete">Delete</button></form></div></td></tr>
+{% empty %}<tr><td colspan="9" class="muted">Nothing here yet.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

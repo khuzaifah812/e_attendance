@@ -1,0 +1,10 @@
+{% extends 'app.html' %}
+{% block title %}{{ cfg.title }}{% endblock %}{% block pagetitle %}{% if obj %}Edit{% else %}Add{% endif %} {{ cfg.title|lower }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:760px"><h3>{% if obj %}Edit{% else %}Add{% endif %} {{ cfg.title|lower }}</h3>
+{% if key == 'rooms' %}<div class="alert alert-info"><span>Tip: open Google Maps on your phone while standing inside the room, long-press your position and copy the latitude/longitude. Students must be within the radius to take attendance.</span></div>{% endif %}
+{% if form.non_field_errors %}<div class="alert alert-error"><span>{{ form.non_field_errors|join:" " }}</span></div>{% endif %}
+<form method="post">{% csrf_token %}<div class="grid-form">{% for f in form %}<div class="field {% if f.field.widget.input_type == 'checkbox' %}checkrow{% endif %}">
+{% if f.field.widget.input_type == 'checkbox' %}{{ f }}<label style="margin:0">{{ f.label }}</label>{% else %}<label>{{ f.label }}</label>{{ f }}{% endif %}{% if f.help_text %}<div class="help">{{ f.help_text }}</div>{% endif %}{{ f.errors }}</div>{% endfor %}</div>
+<div class="row mt"><button class="btn btn-primary" type="submit">Save</button><a class="btn btn-light" href="{% if key == 'courses' %}{% url 'courses' %}{% else %}{% url 'crud_list' key %}{% endif %}">Cancel</a></div></form></div>
+{% endblock %}

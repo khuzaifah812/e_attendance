@@ -1,0 +1,27 @@
+{% extends 'app.html' %}{% load static sars_tags %}
+{% block title %}Lecture Session{% endblock %}
+{% block pagetitle %}Lecture Session{% endblock %}
+{% block head %}<script defer src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ lec.course.code }} &middot; {{ lec.topic }}</h1><p>{{ lec.start|date:"D d M Y, H:i" }} - {{ lec.end|date:"H:i" }} &middot; {% if lec.mode == 'physical' %}{{ lec.room }}{% else %}Online{% endif %} &middot; {{ enrolled }} registered students</p></div>
+ <div class="row"><span class="badge {{ lec.state }}">{{ lec.state|title }}</span><a class="btn btn-light btn-sm" href="{% url 'lectures' %}">&larr; Back</a></div></div>
+<div class="grid g2">
+ <div class="card"><h3>Attendance code</h3>
+  {% if open %}
+   <div class="bigcode" id="theCode">{{ lec.code }}</div>
+   <div id="qrbox" class="mt" data-code="{{ lec.code }}"></div>
+   <p class="center muted small mt">Code expires in</p><div class="countdown" id="countdown" data-expiry="{{ lec.code_expires_at.isoformat }}">--:--</div>
+   <p class="small muted center">Valid for 30 minutes and never beyond the lecture end ({{ lec.end|date:"H:i" }}).</p>
+   <form method="post" class="center mt">{% csrf_token %}<button class="btn btn-light btn-sm" type="submit" data-confirm="Generate a new code? The old code will stop working." data-title="New code">Generate a new code</button></form>
+  {% else %}
+   {% if lec.activated_at %}<div class="alert alert-warning"><span>The last code has expired.</span></div>{% endif %}
+   <p class="muted mb">Students can only take attendance after you activate the session. Activation is possible only during the lecture time ({{ lec.start|date:"H:i" }} - {{ lec.end|date:"H:i" }}).</p>
+   <form method="post">{% csrf_token %}<button class="btn btn-primary btn-block" type="submit" {% if lec.state != 'live' %}disabled{% endif %}>Activate session &amp; send code</button></form>
+   {% if lec.state != 'live' %}<p class="small muted mt">This lecture is {{ lec.state }}; activation is not available.</p>{% endif %}
+  {% endif %}</div>
+ <div class="card"><div class="card-head"><h3>Live attendance</h3><b id="liveCount" data-api="{% url 'api_session' lec.pk %}">0 / {{ enrolled }}</b></div>
+  <div class="bar mb"><i id="liveBar" style="width:0"></i></div>
+  <div class="table-wrap" style="max-height:420px;overflow:auto"><table><thead><tr><th>Student</th><th>Reg no.</th><th>Time</th><th>Method</th></tr></thead><tbody id="liveRows"><tr><td colspan="4" class="muted">Waiting for students...</td></tr></tbody></table></div></div>
+</div>
+{% endblock %}
+{% block scripts %}<script>SARS.initSession();</script>{% endblock %}

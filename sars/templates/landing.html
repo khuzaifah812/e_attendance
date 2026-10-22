@@ -1,0 +1,78 @@
+{% extends 'base.html' %}{% load sars_tags %}
+{% block title %}Smarter Attendance. Better Learning.{% endblock %}
+{% block body %}
+<header class="nav"><div class="in">
+ <a href="{% url 'landing' %}">{% include 'partials/logo.html' %}</a>
+ <nav class="links">
+  <a class="hide-m" href="#features">Features</a><a class="hide-m" href="#how">How it works</a><a class="hide-m" href="#roles">Who uses SARS</a>
+  {% if user.is_authenticated %}<a class="btn btn-primary btn-sm" href="{% url 'dashboard' %}">Open Dashboard</a>
+  {% else %}<a href="{% url 'login' %}">Login</a><a class="btn btn-primary btn-sm" href="{% url 'register' %}">Get Started</a>{% endif %}
+ </nav></div></header>
+
+<section class="hero"><div class="in">
+ <div>
+  <span class="pill">&#10003; Built for every level: Certificate &middot; Diploma &middot; Degree &middot; Postgraduate</span>
+  <h1 style="margin-top:18px">Smarter Attendance.<br><span>Better Learning.</span></h1>
+  <p class="lead">SARS is a modern and secure system that helps students, lecturers and coordinators register, take attendance, track progress and stay connected, all in one place.</p>
+  <div class="row"><a class="btn btn-primary" style="background:#5be08f;color:#08301d" href="{% url 'login' %}">Login to Your Account</a><a class="btn btn-outline" href="#features">Learn More</a></div>
+  <div class="pills"><span class="pill">{% icon 'camera' 16 %} Face recognition &amp; QR code</span><span class="pill">{% icon 'pin' 16 %} Room location check</span><span class="pill">{% icon 'bell' 16 %} Email &amp; system reminders</span></div>
+ </div>
+ <div class="mock">
+  <div class="top"><strong style="color:#0b4f2f">Student Dashboard</strong><span class="badge live">LIVE LECTURE</span></div>
+  <div class="mini"><div class="ring" style="background:conic-gradient(#2fa862 78%,#e3efe8 0)"><b>78%</b></div>
+   <div><strong>Attendance Percentage</strong><div class="small muted">43 of 55 lectures attended</div><div class="bar mt" style="margin-top:8px"><i style="width:78%"></i></div></div></div>
+  <div class="row2"><span><b>CSC101</b> Intro to Computer Science</span><span class="badge good">Location verified</span></div>
+  <div class="row2"><span><b>MAT201</b> Discrete Mathematics</span><span class="badge online">Online &middot; code 28:45</span></div>
+  <div class="row2"><span><b>DSS301</b> Data Analytics</span><span class="badge upcoming">in 1 hour</span></div>
+  <div class="row2" style="border:0"><span>{% icon 'bell' 16 %} Reminder: lecture starts in 10 minutes</span><span class="muted small">now</span></div>
+  <a class="btn btn-primary btn-block mt" href="{% url 'login' %}">Take Attendance</a>
+ </div>
+</div></section>
+
+<section class="section" id="features"><div class="in">
+ <h2>Everything attendance needs, in one system</h2>
+ <p class="sub">From the lecture room to the semester calendar, SARS keeps students, lecturers and administrators in sync.</p>
+ <div class="grid g3">
+  <div class="feature"><div class="ic">{% icon 'camera' 26 %}</div><h3>Face Recognition &amp; QR Code</h3><p>Students prove they are present by face scan or by the QR code the lecturer generates when the session is activated.</p></div>
+  <div class="feature"><div class="ic">{% icon 'pin' 26 %}</div><h3>Room Location Verification</h3><p>Physical-lecture attendance only works when the student is physically inside the lecture room, checked by GPS.</p></div>
+  <div class="feature"><div class="ic">{% icon 'clock' 26 %}</div><h3>30-Minute Online Codes</h3><p>Online lectures use a secure code that lasts 30 minutes and is only valid during the lecture time. One attendance per lecture.</p></div>
+  <div class="feature"><div class="ic">{% icon 'trending' 26 %}</div><h3>Live Attendance Percentage</h3><p>Calculated from lectures actually taught in the semester, emergency lectures included, per course and overall.</p></div>
+  <div class="feature"><div class="ic">{% icon 'bell' 26 %}</div><h3>Smart Reminders</h3><p>Students are reminded 5 hours, 1 hour and 10 minutes before a lecture; lecturers 2 hours and 10 minutes. By email and in the system.</p></div>
+  <div class="feature"><div class="ic">{% icon 'calendar' 26 %}</div><h3>Semester Calendar</h3><p>Every activity from day one to the end of the semester: lectures, coursework, exams, meetings and emergency lectures.</p></div>
+  <div class="feature"><div class="ic">{% icon 'send' 26 %}</div><h3>Announcements &amp; Coursework</h3><p>Lecturers post announcements, notes and assignments that reach all their students on the system and by email.</p></div>
+  <div class="feature"><div class="ic">{% icon 'shield' 26 %}</div><h3>Role-Based Dashboards</h3><p>Dedicated dashboards for students, lecturers, coordinators and the administrator who controls everything.</p></div>
+  <div class="feature"><div class="ic">{% icon 'printer' 26 %}</div><h3>Printable Attendance Lists</h3><p>Print a complete attendance list with the student's details, course summaries and every lecture attended.</p></div>
+ </div>
+</div></section>
+
+<section class="section" id="how" style="background:#eaf7f0"><div class="in">
+ <h2>How it works</h2><p class="sub">Four simple steps from registration to results.</p>
+ <div class="grid g4">
+  <div class="step"><h3>Register</h3><p class="muted">Create your account. Your username is your registration number and your password is your name.</p></div>
+  <div class="step"><h3>Join courses</h3><p class="muted">Register for the courses of your level and see your timetable and calendar.</p></div>
+  <div class="step"><h3>Take attendance</h3><p class="muted">When the lecturer activates the session, verify your location and face or enter the code.</p></div>
+  <div class="step"><h3>Track progress</h3><p class="muted">Watch your attendance percentage grow and print your full attendance list.</p></div>
+ </div>
+</div></section>
+
+<section class="section" id="roles"><div class="in">
+ <h2>One system, four roles</h2><p class="sub">Each person sees exactly what they need.</p>
+ <div class="grid g4">
+  <div class="feature"><h3>Student</h3><p>Attendance, percentage, courses, calendar, notifications, coursework and printing.</p></div>
+  <div class="feature"><h3>Lecturer</h3><p>Timetable without clashes, session codes &amp; QR, live monitoring, announcements and notes.</p></div>
+  <div class="feature"><h3>Coordinator</h3><p>All lecturer tools plus managing students, courses, rooms and semester activities.</p></div>
+  <div class="feature"><h3>Administrator</h3><p>Controls everything and can open any student's dashboard with one click.</p></div>
+ </div>
+</div></section>
+
+<section class="band section" style="padding:46px 24px"><div class="in">
+ <div><strong>4</strong>Study levels</div><div><strong>30 min</strong>Online code lifetime</div><div><strong>3</strong>Reminders per lecture</div><div><strong>100%</strong>Live tracking</div>
+</div></section>
+
+<section class="section"><div class="in"><div class="cta">
+ <h2>Ready for smarter attendance?</h2><p style="margin:10px 0 24px;opacity:.9">Join SARS today and make every lecture count.</p>
+ <a class="btn btn-primary" style="background:#5be08f;color:#08301d" href="{% url 'register' %}">Register as a Student</a>
+ <a class="btn btn-outline" href="{% url 'login' %}">Login</a>
+</div></div></section>
+<footer class="footer">&copy; 2026 SARS &mdash; Students Attendance &amp; Registration System. Your Education, Our Priority.</footer>
+{% endblock %}

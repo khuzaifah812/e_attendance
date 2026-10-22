@@ -1,0 +1,10 @@
+{% extends 'app.html' %}
+{% block title %}Schedule Lecture{% endblock %}{% block pagetitle %}{% if lec %}Edit Lecture{% else %}Schedule Lecture{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:820px"><h3>{% if lec %}Edit lecture{% else %}Schedule a new lecture{% endif %}</h3>
+ <p class="small muted mb">The system rejects a lecture that overlaps another lecture of the same lecturer or the same room. Tick "Emergency lecture" to notify students immediately.</p>
+ {% if form.non_field_errors %}<div class="alert alert-error"><span>{{ form.non_field_errors|join:" " }}</span></div>{% endif %}
+ <form method="post">{% csrf_token %}<div class="grid-form">
+ {% for f in form %}<div class="field {% if f.name == 'is_emergency' %}checkrow{% endif %}">{% if f.name == 'is_emergency' %}{{ f }}<label style="margin:0">{{ f.label }}</label>{% else %}<label>{{ f.label }}</label>{{ f }}{% endif %}{{ f.errors }}</div>{% endfor %}
+ </div><div class="row mt"><button class="btn btn-primary" type="submit">Save lecture</button><a class="btn btn-light" href="{% url 'lectures' %}">Cancel</a></div></form></div>
+{% endblock %}

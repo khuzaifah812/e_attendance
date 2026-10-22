@@ -1,0 +1,26 @@
+{% extends 'app.html' %}{% load sars_tags %}
+{% block title %}Lectures{% endblock %}
+{% block pagetitle %}{% if role == 'student' %}Lectures{% else %}Lecture Timetable{% endif %}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{% if role == 'student' %}My Lectures{% else %}Lecture Timetable{% endif %}</h1><p>{{ semester.name|default:"No semester set" }}{% if role != 'student' %} &middot; a lecturer cannot have two lectures at the same time{% endif %}</p></div>
+ {% if role != 'student' %}<a class="btn btn-primary" href="{% url 'lecture_new' %}">+ Schedule lecture</a>{% endif %}</div>
+<div class="tabs"><a class="{% if when == 'upcoming' %}on{% endif %}" href="?when=upcoming{% if scope %}&scope={{ scope }}{% endif %}">Upcoming</a><a class="{% if when == 'past' %}on{% endif %}" href="?when=past{% if scope %}&scope={{ scope }}{% endif %}">Past</a><a class="{% if when == 'all' %}on{% endif %}" href="?when=all{% if scope %}&scope={{ scope }}{% endif %}">All</a>
+ {% if role == 'coordinator' %}<a class="{% if scope == 'all' %}on{% endif %}" href="?when={{ when }}&scope={% if scope == 'all' %}{% else %}all{% endif %}">{% if scope == 'all' %}Show only mine{% else %}Show whole timetable{% endif %}</a>{% endif %}</div>
+<div class="card"><div class="table-wrap"><table><thead><tr><th>Date &amp; time</th><th>Course</th><th>Topic</th><th>Lecturer</th><th>Where</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+{% for l in items %}<tr>
+ <td>{{ l.start|date:"D d M Y" }}<br><span class="small muted">{{ l.start|date:"H:i" }} - {{ l.end|date:"H:i" }}</span></td>
+ <td><b>{{ l.course.code }}</b></td><td>{{ l.topic }} {% if l.is_emergency %}<span class="badge emergency">Emergency</span>{% endif %}</td>
+ <td>{{ l.course.lecturer.display_name|default:"-" }}</td>
+ <td>{% if l.mode == 'physical' %}{{ l.room.name }}{% else %}<span class="badge online">Online</span>{% endif %}</td>
+ <td><span class="badge {{ l.state }}">{{ l.state|title }}</span>{% if l.activated_at %} <span class="badge good">Taught</span>{% endif %}</td>
+ <td><div class="actions">
+  {% if role == 'student' %}
+    {% if l.attended %}<span class="badge good">Attended</span>
+    {% elif l.state == 'live' %}<a class="btn btn-primary btn-sm" href="{% url 'attend' l.pk %}">Take attendance</a>
+    {% elif l.state == 'ended' and l.activated_at %}<span class="badge bad">Missed</span>{% endif %}
+  {% else %}
+    {% if l.editable and l.state != 'cancelled' %}<a class="btn btn-primary btn-sm" href="{% url 'lecture_session' l.pk %}">Session</a><a class="btn btn-light btn-sm" href="{% url 'lecture_edit' l.pk %}">Edit</a>
+     {% if not l.activated_at %}<form method="post" action="{% url 'lecture_cancel' l.pk %}">{% csrf_token %}<button class="btn btn-danger btn-sm" type="submit" data-confirm="Cancel this lecture? Students will be notified." data-title="Cancel lecture">Cancel</button></form>{% endif %}{% endif %}
+  {% endif %}</div></td></tr>
+{% empty %}<tr><td colspan="7" class="muted">No lectures found.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

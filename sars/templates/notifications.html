@@ -1,0 +1,11 @@
+{% extends 'app.html' %}{% load sars_tags %}
+{% block title %}Notifications{% endblock %}{% block pagetitle %}Notifications{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Notifications</h1><p>Lecture reminders, announcements and updates</p></div>
+ <form method="post" action="{% url 'notifications_read' %}">{% csrf_token %}<button class="btn btn-light" type="submit">Mark all as read</button></form></div>
+<div class="tabs"><a class="{% if tab == 'system' %}on{% endif %}" href="?tab=system">System notifications</a><a class="{% if tab == 'email' %}on{% endif %}" href="?tab=email">Email notifications</a></div>
+<div class="card">{% for n in page %}<div class="list-item {% if not n.is_read %}unread-row{% endif %}" style="padding:12px 8px"><div class="dot {% if n.kind == 'emergency' %}emergency{% elif not n.is_read %}unread{% endif %}">{% icon 'bell' 18 %}</div>
+ <div style="flex:1"><b>{{ n.title }}</b>{% if n.emailed %} <span class="badge">{% icon 'mail' 12 %} emailed</span>{% endif %}<div class="small" style="margin-top:3px;white-space:pre-line">{{ n.message }}</div></div><span class="small muted">{{ n.created_at|timesince }} ago</span></div>
+{% empty %}<p class="muted">No notifications to show.</p>{% endfor %}
+{% if page.paginator.num_pages > 1 %}<div class="row mt">{% if page.has_previous %}<a class="btn btn-light btn-sm" href="?tab={{ tab }}&page={{ page.previous_page_number }}">&larr; Newer</a>{% endif %}<span class="small muted">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>{% if page.has_next %}<a class="btn btn-light btn-sm" href="?tab={{ tab }}&page={{ page.next_page_number }}">Older &rarr;</a>{% endif %}</div>{% endif %}</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends 'app.html' %}
+{% block title %}New Post{% endblock %}{% block pagetitle %}Post Material{% endblock %}
+{% block content %}
+<div class="card" style="max-width:780px"><h3>Post an announcement, coursework, notes or assignment</h3>
+ <p class="small muted mb">All students registered in the selected course receive it on the system and by email (the attachment is emailed too).</p>
+ <form method="post" enctype="multipart/form-data">{% csrf_token %}{% for f in form %}<div class="field"><label>{{ f.label }}</label>{{ f }}{{ f.errors }}</div>{% endfor %}
+ <div class="row"><button class="btn btn-primary" type="submit" data-confirm="Send this post to all students of the course now?" data-title="Send post" data-type="info">Post &amp; notify students</button><a class="btn btn-light" href="{% url 'posts' %}">Cancel</a></div></form></div>
+{% endblock %}

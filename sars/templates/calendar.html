@@ -1,0 +1,11 @@
+{% extends 'app.html' %}{% load static %}
+{% block title %}Calendar{% endblock %}{% block pagetitle %}Calendar{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Semester Calendar</h1><p>{{ semester.name|default:"No semester" }}: {{ semester.start_date|date:"d M Y" }} to {{ semester.end_date|date:"d M Y" }}</p></div></div>
+<div class="split"><div class="card">
+ <div class="cal-head"><button class="btn btn-light btn-sm" id="calPrev" type="button">&larr; Prev</button><h3 id="calTitle" style="margin:0"></h3><button class="btn btn-light btn-sm" id="calNext" type="button">Next &rarr;</button></div>
+ <div class="cal" id="cal"></div>
+ <div class="legend mt"><span><i style="background:#2fa862"></i>Lecture</span><span><i style="background:#d64545"></i>Emergency</span><span><i style="background:#7b4fd0"></i>Exam</span><span><i style="background:#f0a020"></i>Coursework</span><span><i style="background:#2f80ed"></i>Meeting</span><span><i style="background:#8a9a92"></i>Holiday</span><span><i style="background:#12a3a3"></i>Registration</span></div></div>
+ <div class="card"><h3 id="dayTitle">Select a day</h3><div id="dayList"><p class="muted small">Click a date to see its activities.</p></div></div></div>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/calendar.js' %}"></script><script>SARS_CAL.init("{% url 'api_calendar' %}");</script>{% endblock %}

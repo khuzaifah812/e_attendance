@@ -1,0 +1,35 @@
+{% extends 'app.html' %}{% load sars_tags %}
+{% block title %}Dashboard{% endblock %}
+{% block pagetitle %}{% if role == 'coordinator' %}Coordinator Dashboard{% else %}Lecturer Dashboard{% endif %}{% endblock %}
+{% block content %}
+<div class="card mb"><div class="profile-head">{% include 'partials/avatar.html' with u=user cls='lg' %}
+ <div style="flex:1"><h1 style="font-size:22px">{{ user.display_name }}</h1><p class="muted">{{ user.get_role_display }}{% if user.department %} &middot; {{ user.department }}{% endif %}</p>
+  <dl class="kv mt"><dt>Staff ID</dt><dd>{{ user.username }}</dd><dt>Email</dt><dd>{{ user.email|default:"-" }}</dd><dt>Phone</dt><dd>{{ user.phone|default:"-" }}</dd><dt>Semester</dt><dd>{{ semester.name|default:"-" }}</dd></dl></div>
+ <div class="row"><a class="btn btn-primary" href="{% url 'lecture_new' %}">+ Schedule lecture</a><a class="btn btn-light" href="{% url 'post_new' %}">{% icon 'send' 16 %} Post material</a></div></div></div>
+
+<div class="grid g4 mb">
+ <div class="card stat"><div class="ic">{% icon 'book' 24 %}</div><div><small>My courses</small><strong>{{ courses|length }}</strong></div></div>
+ <div class="card stat"><div class="ic">{% icon 'clock' 24 %}</div><div><small>Lectures this semester</small><strong>{{ total }}</strong></div></div>
+ <div class="card stat"><div class="ic">{% icon 'check' 24 %}</div><div><small>Lectures taught</small><strong>{{ taught }}</strong></div></div>
+ {% if can_manage %}<div class="card stat"><div class="ic">{% icon 'users' 24 %}</div><div><small>Students / Lecturers</small><strong>{{ students_total }} / {{ lecturers_total }}</strong></div></div>
+ {% else %}<div class="card stat"><div class="ic">{% icon 'calendar' 24 %}</div><div><small>Today's lectures</small><strong>{{ today_lectures|length }}</strong></div></div>{% endif %}
+</div>
+{% if can_manage %}<div class="card mb"><h3>Coordinator tools</h3><div class="row">
+ <a class="btn btn-light" href="{% url 'students' %}">Manage students</a><a class="btn btn-light" href="{% url 'student_add' %}">+ Register student</a>
+ <a class="btn btn-light" href="{% url 'courses' %}?scope=all">All courses</a><a class="btn btn-light" href="{% url 'lectures' %}?scope=all">Whole timetable</a>
+ <a class="btn btn-light" href="{% url 'crud_list' 'rooms' %}">Rooms</a><a class="btn btn-light" href="{% url 'crud_list' 'events' %}">Semester events</a></div></div>{% endif %}
+
+<div class="card mb"><div class="card-head"><h3>Today's lectures</h3></div>
+ {% for l in today_lectures %}<div class="list-item"><div class="dot">{% icon 'clock' 18 %}</div><div style="flex:1"><b>{{ l.course.code }}</b> &middot; {{ l.topic }} <span class="badge {{ l.state }}">{{ l.state|title }}</span>
+  <div class="small muted">{{ l.start|date:"H:i" }} - {{ l.end|date:"H:i" }} &middot; {% if l.mode == 'physical' %}{{ l.room }}{% else %}Online{% endif %}</div></div>
+  {% if l.state != 'cancelled' %}<a class="btn btn-primary btn-sm" href="{% url 'lecture_session' l.pk %}">Open session</a>{% endif %}</div>
+ {% empty %}<p class="muted">No lectures today.</p>{% endfor %}</div>
+
+<div class="card"><div class="card-head"><h3>All my lectures this semester</h3><a href="{% url 'lectures' %}?when=all" class="small">Manage timetable</a></div>
+ <div class="table-wrap"><table><thead><tr><th>Date &amp; time</th><th>Course</th><th>Topic</th><th>Where</th><th>Status</th><th></th></tr></thead><tbody>
+ {% for l in lectures %}<tr><td>{{ l.start|date:"D d M Y, H:i" }}</td><td><b>{{ l.course.code }}</b></td><td>{{ l.topic }} {% if l.is_emergency %}<span class="badge emergency">Emergency</span>{% endif %}</td>
+  <td>{% if l.mode == 'physical' %}{{ l.room.name }}{% else %}<span class="badge online">Online</span>{% endif %}</td>
+  <td><span class="badge {{ l.state }}">{% if l.activated_at %}Taught{% else %}{{ l.state|title }}{% endif %}</span></td>
+  <td>{% if l.state != 'cancelled' %}<a class="btn btn-light btn-sm" href="{% url 'lecture_session' l.pk %}">Session</a>{% endif %}</td></tr>
+ {% empty %}<tr><td colspan="6" class="muted">No lectures scheduled yet.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

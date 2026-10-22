@@ -1,0 +1,46 @@
+{% extends 'app.html' %}{% load sars_tags %}
+{% block title %}Dashboard{% endblock %}
+{% block pagetitle %}{% if viewing %}Student Dashboard (Admin view){% else %}Dashboard{% endif %}{% endblock %}
+{% block content %}
+{% if viewing %}<div class="alert alert-info"><span>You are viewing <b>{{ student.display_name }}</b>'s dashboard.</span>
+ <a class="btn btn-light btn-sm" style="margin-left:auto" href="{% url 'students' %}">&larr; Student list</a>
+ <a class="btn btn-primary btn-sm" href="{% url 'student_print' student.pk %}" target="_blank">{% icon 'printer' 16 %} Print attendance list</a></div>{% endif %}
+<div class="page-head"><div class="profile-head">{% include 'partials/avatar.html' with u=student cls='md' %}
+ <div><h1>Welcome, {{ student.display_name }}</h1><p>Registration No: {{ student.username }} &nbsp;|&nbsp; Level: {{ student.get_level_display }} &nbsp;|&nbsp; Program: {{ student.program|default:"-" }} &nbsp;|&nbsp; {{ semester.name|default:"No semester" }}</p></div></div></div>
+
+<div class="grid g4 mb">
+ <div class="card stat"><div class="ic">{% icon 'trending' 24 %}</div><div><small>Attendance Percentage</small><strong>{{ summary.percent }}%</strong></div></div>
+ <div class="card stat"><div class="ic">{% icon 'check' 24 %}</div><div><small>Lectures Attended</small><strong>{{ summary.attended }} / {{ summary.taught }}</strong></div></div>
+ <div class="card stat"><div class="ic">{% icon 'clock' 24 %}</div><div><small>Upcoming Lectures</small><strong>{{ upcoming|length }}</strong></div></div>
+ <div class="card stat"><div class="ic">{% icon 'bell' 24 %}</div><div><small>Total Notifications</small><strong>{{ notif_total }}</strong></div></div>
+</div>
+{% if summary.taught and summary.percent < 75 %}<div class="alert alert-warning"><span><b>Warning:</b> attendance is below 75%. Attend upcoming lectures to improve it.</span></div>{% endif %}
+
+<div class="split">
+ <div class="card"><div class="card-head"><h3>Upcoming &amp; live lectures</h3><a href="{% url 'lectures' %}" class="small">View all</a></div>
+  {% for l in upcoming %}
+   <div class="list-item"><div class="dot {% if l.is_emergency %}emergency{% endif %}">{% icon 'clock' 18 %}</div>
+    <div style="flex:1"><b>{{ l.course.code }}</b> &middot; {{ l.topic }} {% if l.is_emergency %}<span class="badge emergency">Emergency</span>{% endif %}
+     <div class="small muted">{{ l.start|date:"D d M, H:i" }} - {{ l.end|date:"H:i" }} &middot; {% if l.mode == 'physical' %}{{ l.room }}{% else %}Online{% endif %}</div></div>
+    {% if viewing %}{% if l.attended %}<span class="badge good">Attended</span>{% endif %}
+    {% elif l.attended %}<span class="badge good">Attended</span>
+    {% elif l.state == 'live' %}<a class="btn btn-primary btn-sm" href="{% url 'attend' l.pk %}">Take attendance</a>
+    {% else %}<span class="badge upcoming">Upcoming</span>{% endif %}</div>
+  {% empty %}<p class="muted">No upcoming lectures.</p>{% endfor %}
+ </div>
+ <div class="card"><div class="card-head"><h3>Recent notifications</h3><a href="{% url 'notifications' %}" class="small">View all</a></div>
+  {% for n in notes %}<div class="list-item"><div class="dot {% if n.kind == 'emergency' %}emergency{% endif %}">{% icon 'bell' 18 %}</div><div><b>{{ n.title }}</b><div class="small muted">{{ n.message|truncatechars:90 }}</div><div class="small muted">{{ n.created_at|timesince }} ago</div></div></div>
+  {% empty %}<p class="muted">No notifications yet.</p>{% endfor %}
+ </div>
+</div>
+
+<div class="card mt"><div class="card-head"><h3>Attendance by course</h3>
+ <div class="row"><a class="btn btn-light btn-sm" href="{% if viewing %}{% url 'student_print' student.pk %}{% else %}{% url 'my_print' %}{% endif %}" target="_blank">{% icon 'printer' 16 %} Print attendance list</a>
+ {% if not viewing %}<a class="btn btn-primary btn-sm" href="{% url 'my_attendance' %}">Full details</a>{% endif %}</div></div>
+ <div class="table-wrap"><table><thead><tr><th>Course</th><th>Lecturer</th><th>Attended</th><th>Taught</th><th>Percentage</th></tr></thead><tbody>
+ {% for r in summary.rows %}<tr><td><b>{{ r.course.code }}</b> {{ r.course.title }}</td><td>{{ r.course.lecturer.display_name|default:"-" }}</td><td>{{ r.attended }}</td><td>{{ r.taught }}</td>
+  <td><div class="row"><div class="bar {% if r.percent < 50 %}bad{% elif r.percent < 75 %}warn{% endif %}"><i style="width:{{ r.percent }}%"></i></div><b>{{ r.percent }}%</b></div></td></tr>
+ {% empty %}<tr><td colspan="5" class="muted">Not registered for any course yet. <a href="{% url 'courses' %}">Register for courses</a>.</td></tr>{% endfor %}
+ </tbody></table></div>
+</div>
+{% endblock %}

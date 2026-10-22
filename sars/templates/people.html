@@ -1,0 +1,17 @@
+{% extends 'app.html' %}{% load sars_tags %}
+{% block title %}{% if kind == 'students' %}Students{% else %}Lecturers{% endif %}{% endblock %}{% block pagetitle %}{% if kind == 'students' %}Students{% else %}Lecturers{% endif %}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{% if kind == 'students' %}Students{% else %}Lecturers &amp; Coordinators{% endif %}</h1><p>{{ total }} found</p></div>
+ {% if kind == 'students' %}<a class="btn btn-primary" href="{% url 'student_add' %}">+ Register student</a>{% elif role == 'admin' %}<a class="btn btn-primary" href="{% url 'lecturer_add' %}">+ Add lecturer</a>{% endif %}</div>
+<div class="card"><form method="get" class="row mb"><input type="text" name="q" value="{{ q }}" placeholder="Search by name, number or email" style="max-width:340px">
+ {% if kind == 'students' %}<select name="level" style="max-width:180px"><option value="">All levels</option><option value="certificate" {% if level == 'certificate' %}selected{% endif %}>Certificate</option><option value="diploma" {% if level == 'diploma' %}selected{% endif %}>Diploma</option><option value="degree" {% if level == 'degree' %}selected{% endif %}>Degree</option><option value="postgraduate" {% if level == 'postgraduate' %}selected{% endif %}>Postgraduate</option></select>{% endif %}
+ <button class="btn btn-light" type="submit">Search</button></form>
+<div class="table-wrap"><table><thead><tr><th></th><th>Name</th><th>{% if kind == 'students' %}Reg. number{% else %}Staff ID{% endif %}</th>{% if kind == 'students' %}<th>Level</th><th>Attendance</th>{% else %}<th>Role</th><th>Department</th>{% endif %}<th>Email</th><th>Actions</th></tr></thead><tbody>
+{% for p in page %}<tr><td>{% include 'partials/avatar.html' with u=p cls='sm' %}</td><td><b>{{ p.display_name }}</b></td><td>{{ p.username }}</td>
+ {% if kind == 'students' %}<td>{{ p.get_level_display|default:"-" }}</td><td><span class="badge {{ p.pct|pct_class }}">{{ p.pct }}%</span></td>{% else %}<td>{{ p.get_role_display }}</td><td>{{ p.department|default:"-" }}</td>{% endif %}
+ <td>{{ p.email|default:"-" }}</td>
+ <td><div class="actions">{% if kind == 'students' %}<a class="btn btn-primary btn-sm" href="{% url 'student_detail' p.pk %}">View dashboard</a><a class="btn btn-light btn-sm" target="_blank" href="{% url 'student_print' p.pk %}">Print</a>{% endif %}
+ <form method="post" action="{% url 'person_delete' p.pk %}">{% csrf_token %}<button class="btn btn-danger btn-sm" type="submit" data-confirm="Delete {{ p.display_name }} permanently, with all their attendance records?" data-title="Delete account">Delete</button></form></div></td></tr>
+{% empty %}<tr><td colspan="7" class="muted">Nobody found.</td></tr>{% endfor %}</tbody></table></div>
+{% if page.paginator.num_pages > 1 %}<div class="row mt">{% if page.has_previous %}<a class="btn btn-light btn-sm" href="?q={{ q }}&level={{ level }}&page={{ page.previous_page_number }}">&larr; Previous</a>{% endif %}<span class="small muted">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>{% if page.has_next %}<a class="btn btn-light btn-sm" href="?q={{ q }}&level={{ level }}&page={{ page.next_page_number }}">Next &rarr;</a>{% endif %}</div>{% endif %}</div>
+{% endblock %}

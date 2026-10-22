@@ -1,0 +1,13 @@
+{% extends 'app.html' %}
+{% block title %}Course Attendance{% endblock %}{% block pagetitle %}Monitor Attendance{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ course.code }} &middot; {{ course.title }}</h1><p>{{ taught }} lectures taught &middot; {{ total_students }} students &middot; students below 75% are flagged</p></div><a class="btn btn-light" href="{% url 'courses' %}">&larr; Courses</a></div>
+<div class="grid g2"><div class="card"><h3>Students</h3><div class="table-wrap"><table><thead><tr><th>Student</th><th>Reg no.</th><th>Attended</th><th>%</th></tr></thead><tbody>
+{% for r in rows %}<tr><td>{{ r.student.display_name }}</td><td>{{ r.student.username }}</td><td>{{ r.attended }}/{{ taught }}</td>
+<td><div class="row"><div class="bar {% if r.percent < 50 %}bad{% elif r.percent < 75 %}warn{% endif %}"><i style="width:{{ r.percent }}%"></i></div><b>{{ r.percent }}%</b>{% if taught and r.percent < 75 %}<span class="badge warn">Low</span>{% endif %}</div></td></tr>
+{% empty %}<tr><td colspan="4" class="muted">No students registered.</td></tr>{% endfor %}</tbody></table></div></div>
+<div class="card"><h3>Lectures</h3><div class="table-wrap"><table><thead><tr><th>Date</th><th>Topic</th><th>Present</th><th></th></tr></thead><tbody>
+{% for l in lectures %}<tr><td>{{ l.start|date:"d M, H:i" }}</td><td>{{ l.topic }} {% if l.is_emergency %}<span class="badge emergency">Emergency</span>{% endif %}</td>
+<td>{% if l.activated_at %}{{ l.count }}/{{ total_students }}{% else %}<span class="muted small">not held</span>{% endif %}</td><td><a class="btn btn-light btn-sm" href="{% url 'lecture_session' l.pk %}">Open</a></td></tr>
+{% empty %}<tr><td colspan="4" class="muted">No lectures.</td></tr>{% endfor %}</tbody></table></div></div></div>
+{% endblock %}

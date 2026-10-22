@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block body %}
+<div class="auth">
+ <div class="auth-side">
+  <a href="{% url 'landing' %}" style="margin-bottom:40px;position:relative">{% include 'partials/logo.html' with light=True %}</a>
+  <h2>Your Education<br>Our Priority</h2>
+  <p>Sign in to take attendance, follow your semester calendar and stay informed about every lecture.</p>
+ </div>
+ <div class="auth-main"><div class="auth-card">
+  <div class="center mb"><a href="{% url 'landing' %}">{% include 'partials/logo.html' %}</a></div>
+  <h2 style="font-size:22px">Login to your account</h2><p class="muted small mb">Enter your credentials to continue</p>
+  {% include 'partials/messages.html' %}
+  <form method="post" autocomplete="off">{% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+   <div class="field"><label>Registration number / Staff ID</label><input type="text" name="username" placeholder="e.g. 2026/0001" required autofocus></div>
+   <div class="field"><label>Password (your full name)</label><div class="pw-wrap"><input type="password" name="password" placeholder="Enter your name" required><button type="button" data-toggle-password>Show</button></div></div>
+   <div class="field"><label>Select role</label><select name="role"><option value="student">Student</option><option value="lecturer">Lecturer</option><option value="coordinator">Academic Coordinator</option><option value="admin">Administrator</option></select></div>
+   <button class="btn btn-primary btn-block" type="submit">Login</button>
+  </form>
+  <p class="center small mt">New student? <a href="{% url 'register' %}">Create an account</a> &middot; <a href="{% url 'landing' %}">Home</a></p>
+ </div></div>
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'app.html' %}
+{% block title %}My Courses{% endblock %}{% block pagetitle %}My Courses{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Course Registration</h1><p>{{ semester.name|default:"No semester" }} &middot; courses offered for your level</p></div></div>
+<div class="grid g3">{% for c in items %}<div class="card"><div class="row spread"><b style="color:#0b4f2f;font-size:17px">{{ c.code }}</b>{% if c.enrolled %}<span class="badge good">Registered</span>{% endif %}</div>
+ <h3 style="margin:6px 0">{{ c.title }}</h3><p class="small muted">Lecturer: {{ c.lecturer.display_name|default:"To be assigned" }}<br>Level: {{ c.get_level_display }}</p>
+ <form method="post" action="{% url 'course_toggle' c.pk %}" class="mt">{% csrf_token %}
+ {% if c.enrolled %}<button class="btn btn-light btn-sm" type="submit" data-confirm="Drop {{ c.code }}? You will stop receiving its lectures and notifications." data-title="Drop course">Drop course</button>
+ {% else %}<button class="btn btn-primary btn-sm" type="submit">Register for course</button>{% endif %}</form></div>
+{% empty %}<div class="card"><p class="muted">No courses are available for your level yet.</p></div>{% endfor %}</div>
+{% endblock %}
