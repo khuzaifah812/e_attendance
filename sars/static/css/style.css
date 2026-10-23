@@ -207,19 +207,131 @@ tr:hover td{background:#fafdfb}
 
 /* =========================================================
    AUTH (login / register)
+  /* =========================================================
+   AUTH (login / register) - RESPONSIVE
    ========================================================= */
-.auth{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
-.auth-side{background:linear-gradient(145deg,#0b4f2f,#2fa862);color:#fff;display:flex;flex-direction:column;justify-content:center;padding:60px;position:relative;overflow:hidden}
-.auth-side:before,.auth-side:after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.08)}
-.auth-side:before{width:380px;height:380px;right:-120px;top:-100px}
-.auth-side:after{width:260px;height:260px;left:-80px;bottom:-60px}
-.auth-side h2{color:#fff;font-size:38px;margin-bottom:12px;position:relative}
-.auth-side p{opacity:.9;max-width:420px;position:relative}
-.auth-main{display:flex;align-items:center;justify-content:center;padding:30px;background:#f4fbf7}
-.auth-card{background:#fff;border:1px solid #dcebe2;border-radius:20px;padding:32px;width:100%;max-width:440px;box-shadow:0 10px 40px rgba(11,79,47,.08)}
-.auth-card.wide{max-width:900px}
-.photo-box{border:2px dashed #b9dcc8;border-radius:14px;padding:16px;text-align:center;background:#f7fcf9}
-.photo-box img{width:120px;height:120px;border-radius:50%;object-fit:cover;margin-bottom:8px}
+.auth {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.auth-side {
+  background: linear-gradient(145deg, #0b4f2f, #2fa862);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-side:before,
+.auth-side:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .08);
+}
+.auth-side:before { width: 380px; height: 380px; right: -120px; top: -100px; }
+.auth-side:after { width: 260px; height: 260px; left: -80px; bottom: -60px; }
+.auth-side h2 { color: #fff; font-size: 38px; margin-bottom: 12px; position: relative; }
+.auth-side p { opacity: .9; max-width: 420px; position: relative; }
+
+.auth-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  background: #f4fbf7;
+}
+
+.auth-card {
+  background: #fff;
+  border: 1px solid #dcebe2;
+  border-radius: 20px;
+  padding: 32px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 10px 40px rgba(11, 79, 47, .08);
+  /* Added to prevent internal overflow */
+  min-width: 0; 
+}
+
+.auth-card.wide {
+  max-width: 900px;
+}
+
+/* Added flex to help elements center cleanly */
+.photo-box {
+  border: 2px dashed #b9dcc8;
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+  background: #f7fcf9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.photo-box img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+
+/* =========================================================
+   AUTH RESPONSIVE OVERRIDES (Add this to the bottom of CSS)
+   ========================================================= */
+
+@media (max-width: 980px) {
+  .auth {
+    grid-template-columns: 1fr; /* Stack the side panel and form */
+  }
+  .auth-side {
+    display: none; /* Hide the green left panel on tablets/mobile */
+  }
+  .auth-main {
+    padding: 24px 16px;
+  }
+  .auth-card {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 780px) {
+  .auth-card {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+  
+  /* iOS Zoom Prevention: Inputs must be 16px to stop the screen from zooming */
+  .auth-card input, 
+  .auth-card select, 
+  .auth-card textarea {
+    font-size: 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* 
+   * FIX FOR THE SCREENSHOT: 
+   * If your HTML uses a grid or flex layout for the photo/fields, this forces them to stack.
+   * Note: You may need to change ".grid" or ".row" to the actual class name used in your register.html
+   */
+  .auth-card .grid,
+  .auth-card .row,
+  .auth-card .grid-form {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+}
 
 /* =========================================================
    LANDING PAGE
