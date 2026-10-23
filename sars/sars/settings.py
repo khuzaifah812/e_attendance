@@ -19,7 +19,7 @@ def env(name, default=''):
 
 
 SECRET_KEY = env('SECRET_KEY', 'dev-only-insecure-key-change-me')
-DEBUG = env('DEBUG', 'True').lower() == 'true'
+DEBUG = env('DEBUG', 'False').lower() == 'false' or env('DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
 CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
@@ -117,6 +117,8 @@ STORAGES = {
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'landing'
+
+
 
 # ---------------- Email ----------------
 if env('EMAIL_HOST_USER'):
